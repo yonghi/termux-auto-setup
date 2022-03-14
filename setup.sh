@@ -5,26 +5,10 @@ function printll() {
     i=1
     while [ ${i} -lt 5 ] #https://www.cnblogs.com/sidesky/p/10679427.html
     do
-      let i++
-      printf " "
+      	let i++
+      	printf " "
     done
     echo -e "\033[47;30m $* \033[0m"
-		#echo -e "\033[30m 黑色字 \033[0m"
-		# echo -e "\033[31m 红色字 \033[0m"
-		# echo -e "\033[32m 绿色字 \033[0m"
-		# echo -e "\033[33m 黄色字 \033[0m"
-		# echo -e "\033[34m 蓝色字 \033[0m" 
-		# echo -e "\033[35m 紫色字 \033[0m" 
-		# echo -e "\033[36m 天蓝字 \033[0m" 
-		# echo -e "\033[37m 白色字 \033[0m" 
-		# echo -e "\033[40;37m 黑底白字 \033[0m"
-		# echo -e "\033[41;37m 红底白字 \033[0m" 
-		# echo -e "\033[42;37m 绿底白字 \033[0m" 
-		# echo -e "\033[43;37m 黄底白字 \033[0m" 
-		# echo -e "\033[44;37m 蓝底白字 \033[0m" 
-		# echo -e "\033[45;37m 紫底白字 \033[0m" 
-		# echo -e "\033[46;37m 天蓝底白字 \033[0m" 
-		# echo -e "\033[47;30m 白底黑字 \033[0m"
 }
 if [[ "$*" =~ help || ! -n "$1" ]]; then
 	printll all = INSTALLS AND SETUP EVERYTHING
@@ -37,8 +21,8 @@ if [[ "$*" =~ help || ! -n "$1" ]]; then
     printll eks = CUSTOMIZE EXTRA-KEY
     printll info = PRINT BASIC INFO
     printll yg = INSTALL YOU-GET
-	  printll basic = INSTALL BASIC TOOLS
-	  printll zas = INSTALL ZSH-AUTOSUGGESTIONS
+	printll basic = INSTALL BASIC TOOLS
+	printll zas = INSTALL ZSH-AUTOSUGGESTIONS
     printll ss = SETUP STORAGE
     printll fun = INSTALL FUN SOFTWARES
     printll b = Backing up
@@ -56,7 +40,6 @@ if [[ "$*" =~ info ]]; then
     printll "And all the open source projects used in the scripts"
 fi
 
-
 #Change source (for Chinese user)
 if [[ "$*" =~ chs || "$*" =~ all ]]; then
     echo "Start to change software source to tsinghua tuna"
@@ -69,7 +52,7 @@ fi
 
 #enable storage
 if [[ "$*" =~ ss || "$*" =~ all ]]; then
-	  termux-setup-storage
+	termux-setup-storage
     # echo $HOME  #/data/data/com.termux/files/home
     # echo $PREFIX #/data/data/com.termux/files/usr
 fi
@@ -80,7 +63,7 @@ if [[ "$*" =~ b ]]; then
     termux-setup-storage
     printll "Backing up & Restoring"
     printll "https://wiki.termux.com/wiki/Backing_up_Termux"
-	  tar -zcf /storage/emulated/0/Download/termux-backup.tar.gz -C /data/data/com.termux/files ./home ./usr
+	tar -zcf /storage/emulated/0/Download/termux-backup.tar.gz -C /data/data/com.termux/files ./home ./usr
 fi
 
 #Restoring
@@ -88,13 +71,13 @@ if [[ "$*" =~ r ]]; then
     termux-setup-storage
     printll "Backing up & Restoring"
     printll "https://wiki.termux.com/wiki/Backing_up_Termux"
-	  tar -zxf /storage/emulated/0/Download/termux-backup.tar.gz -C /data/data/com.termux/files --recursive-unlink --preserve-permissions
+	tar -zxf /storage/emulated/0/Download/termux-backup.tar.gz -C /data/data/com.termux/files --recursive-unlink --preserve-permissions
 fi
 
 #SOFT-LINK
 if [[ "$*" =~ sl || "$*" =~ all ]]; then
     #QQ
- 	  ln -s /storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv ~/qq
+ 	ln -s /storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv ~/qq
 fi
 
 #Install baisc tools
@@ -105,12 +88,12 @@ fi
 
 #Install fun softwares
 if [[ "$*" =~ fun || "$*" =~ all ]]; then
-  apt install fortune
-  apt install ruby -y
-  gem install cowsay
-  gem install lolcat
-  echo "for fun just type: fortune | cowsay | lolcat or fun"
-  echo "alias fun='fortune | cowsay | lolcat'" >> "$HOME/.zshrc"
+  	apt install fortune
+  	apt install ruby -y
+  	gem install cowsay
+  	gem install lolcat
+  	echo "for fun just type: fortune | cowsay | lolcat or fun"
+  	echo "alias fun='fortune | cowsay | lolcat'" >> "$HOME/.zshrc"
 fi
 
 #Install you-get _Will not be automatically installed
@@ -159,6 +142,8 @@ if [[ "$*" =~ omz || "$*" =~ all ]]; then
 
     printll "The default color theme is Tango,run chcolor to change it."
     printll "The default font is Ubuntu font,run chfont to change it."
+
+	echo -e "\033[42;37m Please restart Termux app... \033[0m"
 fi
 
 #zsh-autosuggestions
@@ -168,8 +153,8 @@ if [[ "$*" =~ zas || "$*" =~ all ]]; then
     #git clone git://github.com/zsh-users/zsh-autosuggestions  $ZSH_CUSTOM/plugins/2/zsh-autosuggestions --depth 1 #bad run
     
     awk -v line=$(awk '$1!="#" && /plugins=\(/ && !/zsh-autosuggestions/ {print NR}' "$HOME/.zshrc")  '{if(NR==line) gsub(/\)/," zsh-autosuggestions)");print > "'${HOME}'/.zshrc"}' "$HOME/.zshrc"
-	  #在awk内用print输出内容到某个文件，要写权路径，且整个文件名加路径要用双引号括起来；
-	  #即：print > "/tmp/aa" 对于变量 print >> "'${filenamePath}'/aa"
+	#在awk内用print输出内容到某个文件，要写权路径，且整个文件名加路径要用双引号括起来；
+	#即：print > "/tmp/aa" 对于变量 print >> "'${filenamePath}'/aa"
 fi
 
 #VIM
@@ -366,6 +351,5 @@ if [[ "$*" =~ 'fzf' || "$*" =~ all ]]; then
 fi
 
 
-echo -e "\033[42;37m Please restart Termux app... \033[0m"
 exit
 
