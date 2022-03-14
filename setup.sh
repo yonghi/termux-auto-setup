@@ -1,42 +1,65 @@
-#!bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
+#/bin/sh
 
-if [[ "$*" =~ info ]]; then
-    echo "The main content of this script is based on open source code and has been adjusted to suit personal preference."
-    echo "The content of this script may not be suitable for everyone."
-    echo "For access to the original information please visit the following links"
-    echo "And thanks to the authors for their efforts"
-    echo "https://www.sqlsec.com/2018/05/termux.html#toc-heading-23"
-    echo "https://github.com/sahilsehwag/android-termux-setup-script"
-    echo "And all the open source projects used in the scripts"
-
-    echo $HOME  #/data/data/com.termux/files/home
-    echo $PREFIX #/data/data/com.termux/files/usr
-    echo $TMPPREFIX
-
-    echo "Backing up & Restoring"
-    echo "https://wiki.termux.com/wiki/Backing_up_Termux"
-    echo "tar -zcf /sdcard/termux-backup.tar.gz -C /data/data/com.termux/files ./home ./usr"
-    echo "tar -zxf /sdcard/termux-backup.tar.gz -C /data/data/com.termux/files --recursive-unlink --preserve-permissions"
+function printll() {
+    i=1
+    while [ ${i} -lt 5 ] #https://www.cnblogs.com/sidesky/p/10679427.html
+    do
+      let i++
+      printf " "
+    done
+    echo -e "\033[47;30m $* \033[0m"
+		#echo -e "\033[30m 黑色字 \033[0m"
+		# echo -e "\033[31m 红色字 \033[0m"
+		# echo -e "\033[32m 绿色字 \033[0m"
+		# echo -e "\033[33m 黄色字 \033[0m"
+		# echo -e "\033[34m 蓝色字 \033[0m" 
+		# echo -e "\033[35m 紫色字 \033[0m" 
+		# echo -e "\033[36m 天蓝字 \033[0m" 
+		# echo -e "\033[37m 白色字 \033[0m" 
+		# echo -e "\033[40;37m 黑底白字 \033[0m"
+		# echo -e "\033[41;37m 红底白字 \033[0m" 
+		# echo -e "\033[42;37m 绿底白字 \033[0m" 
+		# echo -e "\033[43;37m 黄底白字 \033[0m" 
+		# echo -e "\033[44;37m 蓝底白字 \033[0m" 
+		# echo -e "\033[45;37m 紫底白字 \033[0m" 
+		# echo -e "\033[46;37m 天蓝底白字 \033[0m" 
+		# echo -e "\033[47;30m 白底黑字 \033[0m"
+}
+if [[ "$*" =~ help || ! -n "$1" ]]; then
+	printll all = INSTALLS AND SETUP EVERYTHING
+    printll chs = CHANGE SOFTWARE SOURCE TO TSINGHUA TUNA
+  	printll omz = INSTALLS OH-MY-ZSH AND SETUP .zshrc.
+  	printll vim = INSTALLS vim-python AND SETUP .vimrc
+  	printll fasd = INSTALL AND SETUP FASD
+  	printll fzf = INSTALL FZF AND ADD COMMON ALIASES LIKE fcd AND fv
+  	printll neovim = INSTALL NEOVIM AND SETUP init.vim
+    printll eks = CUSTOMIZE EXTRA-KEY
+    printll info = PRINT BASIC INFO
+    printll yg = INSTALL YOU-GET
+	  printll basic = INSTALL BASIC TOOLS
+	  printll zas = INSTALL ZSH-AUTOSUGGESTIONS
+    printll ss = SETUP STORAGE
+    printll fun = INSTALL FUN SOFTWARES
+    printll b = Backing up
+    printll r = Restoring
+    printll sl = Create soft links
 fi
 
-if [[ "$*" =~ help ]]; then
-	echo all = INSTALLS & SETUP EVERYTHING
-    echo chs = CHANGE SOFTWARE SOURCE TO TSINGHUA TUNA
-    echo sl = CREATE SOFT LINK
-	echo omz = INSTALLS OH-MY-ZSH AND SETUP .zshrc. TO CHANGE DEFAULT SHELL USE chsh AND TYPE zsh
-	echo vim = INSTALLS vim-python AND SETUP .vimrc
-	echo fasd = INSTALL AND SETUP FASD
-	echo fzf = INSTALL FZF AND ADD COMMON ALIASES LIKE fcd AND fv
-	echo neovim = INSTALL NEOVIM AND SETUP init.vim
-    echo eks = CUSTOMIZE EXTRA-KEY
-    echo info = PRINT BASIC INFO
-    echo yg = INSTALL YOU-GET
-    echo pt = INSTALL PROXYCHAINS4
+if [[ "$*" =~ info ]]; then    
+	printll "The main content of this script is based on open source code."
+    printll "The content of this script may not be suitable for everyone."
+    printll "The original information please visit the following links"
+    printll "And thanks to the authors for their efforts"
+    printll "https://www.sqlsec.com/2018/05/termux.html#toc-heading-23"
+    printll "https://github.com/sahilsehwag/android-termux-setup-script"
+    printll "And all the open source projects used in the scripts"
 fi
+
 
 #Change source (for Chinese user)
 if [[ "$*" =~ chs || "$*" =~ all ]]; then
-	echo "Start to change software source to tsinghua tuna"
+    echo "Start to change software source to tsinghua tuna"
     sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/termux-packages-24 stable main@' $PREFIX/etc/apt/sources.list
     sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/game-packages-24 games stable@' $PREFIX/etc/apt/sources.list.d/game.list
     sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/science-packages-24 science stable@' $PREFIX/etc/apt/sources.list.d/science.list
@@ -44,33 +67,54 @@ if [[ "$*" =~ chs || "$*" =~ all ]]; then
     pkg update
 fi
 
+#enable storage
+if [[ "$*" =~ ss || "$*" =~ all ]]; then
+	  termux-setup-storage
+    # echo $HOME  #/data/data/com.termux/files/home
+    # echo $PREFIX #/data/data/com.termux/files/usr
+fi
+
+
+#Backing up
+if [[ "$*" =~ b ]]; then
+    termux-setup-storage
+    printll "Backing up & Restoring"
+    printll "https://wiki.termux.com/wiki/Backing_up_Termux"
+	  tar -zcf /storage/emulated/0/Download/termux-backup.tar.gz -C /data/data/com.termux/files ./home ./usr
+fi
+
+#Restoring
+if [[ "$*" =~ r ]]; then
+    termux-setup-storage
+    printll "Backing up & Restoring"
+    printll "https://wiki.termux.com/wiki/Backing_up_Termux"
+	  tar -zxf /storage/emulated/0/Download/termux-backup.tar.gz -C /data/data/com.termux/files --recursive-unlink --preserve-permissions
+fi
+
 #SOFT-LINK
 if [[ "$*" =~ sl || "$*" =~ all ]]; then
     #QQ
-	ln -s /data/data/com.termux/files/home/storage/shared/tencent/QQfile_recv qq
-    #TIM
-    #ln -s /data/data/com.termux/files/home/storage/shared/tencent/TIMfile_recv tim
+ 	  ln -s /storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv ~/qq
 fi
 
 #Install baisc tools
-if [[ "$*" =~ all ]]; then
-	pkg upgrade
-	pkg install -y man
-	pkg install -y curl
-	pkg install -y wget
-	pkg install -y tree
-    pkg install -y proxychains4
-    pkg install -y openssh
-    pkg install neofetch
+if [[ "$*" =~ basic || "$*" =~ all ]]; then
+	pkg update
+	pkg install vim curl wget git tree openssh neofetch man htop -y
 fi
 
-#_Will not be automatically installed
-if [["$*" =~ pt ]]; then
-    pkg install -y proxychains4
+#Install fun softwares
+if [[ "$*" =~ fun || "$*" =~ all ]]; then
+  apt install fortune
+  apt install ruby -y
+  gem install cowsay
+  gem install lolcat
+  echo "for fun just type: fortune | cowsay | lolcat or fun"
+  echo "alias fun='fortune | cowsay | lolcat'" >> "$HOME/.zshrc"
 fi
 
 #Install you-get _Will not be automatically installed
-if [["$*" =~ yg ]]; then
+if [[ "$*" =~ yg ]]; then
     pkg install python3 ffmpeg -y
     pip3 install you-get  -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 fi
@@ -78,11 +122,9 @@ fi
 #OH-MY-ZSH
 if [[ "$*" =~ omz || "$*" =~ all ]]; then
     #sh -c "$(curl -fsSL https://github.com/Cabbagec/termux-ohmyzsh/raw/master/install.sh)"
-    # enable storage
-    termux-setup-storage
     # install zsh
-    apt update
-    apt install -y git zsh
+    pkg update
+    pkg install -y git zsh
     git clone https://github.com/Cabbagec/termux-ohmyzsh.git "$HOME/termux-ohmyzsh" --depth 1
 
     mv "$HOME/.termux" "$HOME/.termux.bak.$(date +%Y.%m.%d-%H:%M:%S)"
@@ -99,28 +141,35 @@ if [[ "$*" =~ omz || "$*" =~ all ]]; then
 		echo "bindkey -v"
 		echo "alias la='ls -a'"
 		echo "alias ll='ls -l'"
-		echo "alias lal='ls -al'"
-		# echo "alias src='source ~/.zshrc'"
+		echo "alias lla='ls -al'"
+		echo "alias src='source ~/.zshrc'"
 
-		echo "alias pi='pkg install'"
-		echo "alias pla='pkg list-all'"
-		echo "alias pii='pkg list-installed'"
-		echo "alias pu='pkg uninstall'"
-		echo "alias psh='pkg show'"
-		echo "alias pse='pkg search'"
+		echo "alias ai='apt install'"
+		echo "alias ala='apt list-all'"
+		echo "alias aii='apt list-installed'"
+		echo "alias au='apt uninstall'"
+		echo "alias ash='apt show'"
+		echo "alias ase='apt search'"
 	} >> ~/.zshrc
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.zsh-syntax-highlightin                              g" --depth 1
-    echo "source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> "$HOME/.zshrc"
+    #git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.zsh-syntax-highlighting" --depth 1
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+    echo "source ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >>  ~/.zshrc
     
-    #zsh-autosuggestions
-    git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
-    awk -v line=$(awk '$1!="#" && /plugins=\(/{print NR}' ~/.zshrc)  '{if(NR==line) gsub(/\)/," zsh-autosuggestions)");print > "~/.zshrc"}' ~/.zshrc
-
     chsh -s zsh
 
-    echo "The default color theme is Tango,run chcolor to change it.";
-    echo "The default font is Ubuntu font,run chfont to change it.";
+    printll "The default color theme is Tango,run chcolor to change it."
+    printll "The default font is Ubuntu font,run chfont to change it."
+fi
 
+#zsh-autosuggestions
+if [[ "$*" =~ zas || "$*" =~ all ]]; then
+    git clone git://github.com/zsh-users/zsh-autosuggestions  ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions #this is ok
+    #git clone https://github.com/zsh-users/zsh-autosuggestions.git "'$ZSH_CUSTOM'/plugins/zsh-autosuggestions" --depth 1 #bad run
+    #git clone git://github.com/zsh-users/zsh-autosuggestions  $ZSH_CUSTOM/plugins/2/zsh-autosuggestions --depth 1 #bad run
+    
+    awk -v line=$(awk '$1!="#" && /plugins=\(/ && !/zsh-autosuggestions/ {print NR}' "$HOME/.zshrc")  '{if(NR==line) gsub(/\)/," zsh-autosuggestions)");print > "'${HOME}'/.zshrc"}' "$HOME/.zshrc"
+	  #在awk内用print输出内容到某个文件，要写权路径，且整个文件名加路径要用双引号括起来；
+	  #即：print > "/tmp/aa" 对于变量 print >> "'${filenamePath}'/aa"
 fi
 
 #VIM
@@ -194,7 +243,7 @@ if [[ "$*" =~ vim || "$*" =~ all ]]; then
 fi
 
 #NEOVIM
-if [[ "$*" =~ neovim ]]; then
+if [[ "$*" =~ neovim || "$*" =~ all ]]; then
 	pkg install -y neovim
 	mkdir ~/.config
 	mkdir ~/.config/nvim
@@ -262,23 +311,21 @@ fi
 
 #Custom extra-key
 if [[ "$*" =~ eks || "$*" =~ all ]]; then
-	# extra-keys = [ \\
-    #  ['ESC','|','/','HOME','UP','END','PGUP','DEL'], \\
-    #  ['TAB','CTRL','ALT','LEFT','DOWN','RIGHT','PGDN','BKSP'] \\
+	# extra-keys = [ \
+    # extra-keys = [ \
+    # ['ESC','|','/','`','UP','QUOTE','APOSTROPHE'], \
+    # ['TAB','CTRL','~','LEFT','DOWN','RIGHT','ENTER'] \
     # ]'
-    # extra-keys = [ \\
-    # ['ESC','|','/','`','UP','QUOTE','APOSTROPHE'], \\
-    # ['TAB','CTRL','~','LEFT','DOWN','RIGHT','ENTER'] \\
-    # ]'
+    cp "$HOME/.termux/termux.properties" "$HOME/.termux/termux.properties.bak.$(date +%Y.%m.%d-%H:%M:%S)"
     tempfile=`mktemp temp.XXXXXX`
-    echo 'ZXh0cmEta2V5cyA9IFsgXAogWydFU0MnLCd8JywnLycsJ0hPTUUnLCdVUCcsJ0VORCcsJ1BHVVAnLCdERUwn' > $tempfile
-    sed -i 's/$/XSwgXAogWydUQUInLCdDVFJMJywnQUxUJywnTEVGVCcsJ0RPV04nLCdSSUdIVCcsJ1BHRE4nLCdCS1NQJ10gXApd/' $tempfile
+    echo 'ICAgIGV4dHJhLWtleXMgPSBbIFwKICAgIFsnRVNDJywnfCcsJy8nLCdgJywnVVAnLCdRVU9URScsJ0FQ' > $tempfile
+    sed -i 's/$/T1NUUk9QSEUnXSwgXAogICAgWydUQUInLCdDVFJMJywnficsJ0xFRlQnLCdET1dOJywnUklHSFQnLCdFTlRFUiddIFwKICAgIF0n/' $tempfile
     cat $tempfile|base64 -d >> ~/.termux/termux.properties
     rm -f $tempfile 2>/dev/null
 fi
 
 #FASD
-if [[ "$*" =~ fasd ]]; then
+if [[ "$*" =~ fasd || "$*" =~ all ]]; then
 	pkg install -y git
 	pkg install -y make
 	git clone https://github.com/clvv/fasd ~/fasd
@@ -318,7 +365,7 @@ if [[ "$*" =~ 'fzf' || "$*" =~ all ]]; then
 	} >> ~/.bashrc
 fi
 
-echo "Please restart Termux app..."
 
+echo -e "\033[42;37m Please restart Termux app... \033[0m"
 exit
 
