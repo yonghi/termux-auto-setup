@@ -350,6 +350,5 @@ if [[ "$*" =~ 'fzf' || "$*" =~ all ]]; then
 	} >> ~/.bashrc
 fi
 
-
 exit
 
